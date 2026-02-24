@@ -15,7 +15,8 @@ To run these scripts, you need a Linux environment with:
 Most scripts require root access to load BPF programs into the kernel:
 
 ```bash
-sudo python3 tsastat.py
+cd tsastat
+sudo ./tsastat.py
 ```
 
 ## Acknowledgements
