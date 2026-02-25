@@ -22,21 +22,21 @@ TRACEPOINT_PROBE(sched, sched_switch) {
 
     pid_s *tsp_start = start.lookup(&next_pid);
     if (tsp_start == 0)
-        return 0;
+      return 0;
 
     u64 delta = ts - tsp_start->ts;
 
     stats_t zero = {};
     stats_t *tsp_dist = dist.lookup_or_try_init(&next_pid, &zero);
     if (tsp_dist == 0)
-        return 0;
+      return 0;
 
     if (tsp_start->state == 0)
-        tsp_dist->run_time += delta;
+      tsp_dist->run_time += delta;
     else if (tsp_start->state & 2)
-        tsp_dist->disk_time += delta;
+      tsp_dist->disk_time += delta;
     else
-        tsp_dist->sleep_time += delta;
+      tsp_dist->sleep_time += delta;
 
     return 0;
 }
