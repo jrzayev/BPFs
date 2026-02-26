@@ -1,4 +1,4 @@
-# eBPF Learning/Testing
+# BPF Learning/Testing
 
 This repository hosts my personal implementations of BPF (Berkeley Packet Filter) tools and scripts for advanced Linux systems performance analysis.
 
@@ -25,5 +25,5 @@ Special thanks to Brendan Gregg for his work and inspiration in the field of sys
 
 ## Disclaimer
 
-All code in this repository was written entirely by me for testing and educational purposes.
+All code in this repository was written entirely by me for testing and educational purposes.<br>
 The tool descriptions, however, were generated with the assistance of AI.
