@@ -26,3 +26,4 @@ Special thanks to Brendan Gregg for his work and inspiration in the field of sys
 ## Disclaimer
 
 All code in this repository was written entirely by me for testing and educational purposes.<br>
+But for some tool descriptions, however, were generated with the assistance of AI.
