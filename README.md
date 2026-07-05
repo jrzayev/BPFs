@@ -4,24 +4,40 @@ This repository hosts my personal implementations of BPF (Berkeley Packet Filter
 
 ## Prerequisites
 
-To run these scripts, you need a Linux environment with:
+To run these tools, you need a Linux environment with:
 * Root privileges (`sudo`)
-* Python 3
-* BCC tools installed (`bpfcc-tools` or `bcc-tools`)
 * A kernel that supports eBPF (Linux 4.x+, recommended 5.x+)
+
+Depending on the tool:
+* **Python/BCC tools** - Python 3 and BCC installed (`bpfcc-tools` or `bcc-tools`)
+* **C/libbpf tools** (e.g. `openlat`) - the [eunomia-bpf](https://github.com/eunomia-bpf/eunomia-bpf) toolchain: `ecc` (compiler) and `ecli` (runner)
 
 ## Usage
 
-Most scripts require root access to load BPF programs into the kernel:
+Most tools require root access to load BPF programs into the kernel.
+
+### Python/BCC tools
 
 ```bash
 cd tsastat
 sudo ./tsastat.py
 ```
 
+### C/libbpf tools (ecc + ecli)
+
+Compile the BPF source into a package, then run it:
+
+```bash
+cd openlat
+ecc openlat.c openlat.h      # compile -> package.json
+sudo ecli run package.json   # load and run
+```
+
 ## Acknowledgements
 
 Special thanks to Brendan Gregg for his work and inspiration in the field of systems performance, and especially in BPF.
+
+Thanks to the [eunomia-bpf](https://github.com/eunomia-bpf/eunomia-bpf) project for the `ecc`/`ecli` toolchain and the [bpf-developer-tutorial](https://github.com/eunomia-bpf/bpf-developer-tutorial), which the C/libbpf tools here are built with and learned from.
 
 ## Disclaimer
 
