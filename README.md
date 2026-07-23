@@ -6,12 +6,12 @@ This repository hosts my personal implementations of BPF (Berkeley Packet Filter
 
 To run these tools, you need a Linux environment with:
 * Root privileges (`sudo`)
-* A kernel that supports eBPF (Linux 4.x+, recommended 5.x+)
+* A kernel that supports eBPF (Linux 5.5+ and my personal opinion recommended 6.x or 7.x)
 
 Depending on the tool:
 * **Python/BCC tools** - Python 3 and BCC installed (`bpfcc-tools` or `bcc-tools`)
-* **C/libbpf tools built with eunomia** (`openlat`) - the [eunomia-bpf](https://github.com/eunomia-bpf/eunomia-bpf) toolchain: `ecc` (compiler) and `ecli` (runner)
-* **C/libbpf tools built with make** (`whoexec`, `acceptlat`) - `clang`, `llvm`, `libbpf-dev`, `bpftool`, `libelf-dev`, `zlib1g-dev`
+* **C/libbpf tools built with eunomia** - the [eunomia-bpf](https://github.com/eunomia-bpf/eunomia-bpf) toolchain: `ecc` (compiler) and `ecli` (runner)
+* **C/libbpf tools built with make** - `clang`, `llvm`, `libbpf-dev`, `bpftool`, `libelf-dev`, `zlib1g-dev`
 
 ## Usage
 
@@ -30,8 +30,8 @@ Compile the BPF source into a package, then run it:
 
 ```bash
 cd openlat
-ecc openlat.c openlat.h      # compile -> package.json
-sudo ecli run package.json   # load and run
+ecc openlat.c openlat.h
+sudo ecli run package.json
 ```
 
 ### C/libbpf tools (make)

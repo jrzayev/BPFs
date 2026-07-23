@@ -42,22 +42,23 @@ struct {
 SEC("tracepoint/sock/inet_sock_set_state")
 int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 {
-  if (ctx->protocol != IPPROTO_TCP)
+  if (ctx->protocol != IPPROTO_TCP) // Check if not TCP skip
 		return 0;
 
-	struct sock *sk = (struct sock *)ctx->skaddr;
-  __u16 sport = ctx->sport;
+  struct sock *sk = (struct sock *)ctx->skaddr; // We get socket form context which we will keep in start HashMap
+  __u16 sport = ctx->sport; // We get source port from context it needs early because if user set specific target source port
 
-  if (target_sport != 0 && target_sport != sport)
+  if (target_sport != 0 && target_sport != sport) // We check if user did set target source port and it is same with port in current context
 		return 0;
 
+  // As TCP is same for kernel in server or client and we need specific where we serving not like client
   if (ctx->oldstate == TCP_SYN_RECV && ctx->newstate == TCP_ESTABLISHED) {
-    struct conn_data conn_data = {};
+    struct conn_data conn_data = {};    // We creat conn_data struct which is a value in start HashMap and next steps for filling the struct
     __u16 dport = ctx->dport;
     conn_data.sport = sport;
   	conn_data.dport = dport;
-    conn_data.start_ts = bpf_ktime_get_ns();
-    bpf_map_update_elem(&start, &sk, &conn_data, 0);
+    conn_data.start_ts = bpf_ktime_get_ns(); // We also save start time to find delta when application will take it's connection
+    bpf_map_update_elem(&start, &sk, &conn_data, 0); // We adding into start HashMap all required information
   }
 
 	return 0;
@@ -66,7 +67,7 @@ int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 
 SEC("fexit/inet_csk_accept")
 int BPF_PROG(fexit_inet_csk_accept, struct sock *sk,
-  struct proto_accept_arg *arg, struct sock *retval)
+  struct proto_accept_arg *arg, struct sock *retval) // We use fexit because we need to know reallyno when app tooks their connection
 {
 	struct conn_data *conn_data;
 	struct event event = {};
@@ -77,7 +78,8 @@ int BPF_PROG(fexit_inet_csk_accept, struct sock *sk,
 	if (!retval)
 		return 0;
 
-	conn_data = bpf_map_lookup_elem(&start, &retval);
+  // We need lookup in retval as for each client we save their sockets, but sk is a listner
+  conn_data = bpf_map_lookup_elem(&start, &retval);
 	if (!conn_data)
 		return 0;
 
@@ -95,7 +97,8 @@ int BPF_PROG(fexit_inet_csk_accept, struct sock *sk,
 
 	event.tgid = tgid;
 
-	bpf_get_current_comm(&event.comm, sizeof(event.comm));
+  // We want to show which process name so we can get it only when proccess will come to take their connection
+  bpf_get_current_comm(&event.comm, sizeof(event.comm));
 
 	event.sport = conn_data->sport;
 	event.dport = conn_data->dport;
@@ -113,6 +116,8 @@ int BPF_PROG(fexit_inet_csk_accept, struct sock *sk,
 	bpf_perf_event_output(ctx, &events, BPF_F_CURRENT_CPU,
 			&event, sizeof(event));
 
+// we have custom label which as you can see were use in couple places when something
+// goes wrong we need to clean hashMap and return or everything went as expected
 bye:
 	bpf_map_delete_elem(&start, &retval);
 	return 0;
