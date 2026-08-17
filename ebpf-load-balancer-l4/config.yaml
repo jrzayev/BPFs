@@ -1,0 +1,13 @@
+interfaceName: "lo"
+loadBalancers:
+  - vip: 10.0.0.10
+    port: 80
+    backends:
+      - 10.0.0.20
+      - 10.0.0.30
+  - vip: 10.0.1.10
+    port: 443
+    backends:
+      - 10.0.1.20
+      - 10.0.1.30
+      - 10.0.1.40
