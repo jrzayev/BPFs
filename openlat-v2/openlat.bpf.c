@@ -1,5 +1,5 @@
-#include "vmlinux.h"
-#include <bpf/bpf_helpers.h>
+#include "../common/vmlinux.h"
+#include "../common/bpf_helpers.h"
 #include "openlat.h"
 #include "bits.bpf.h"
 #include "maps.bpf.h"

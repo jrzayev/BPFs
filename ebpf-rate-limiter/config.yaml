@@ -1,0 +1,6 @@
+interfaceName: "lo"
+rateLimits:
+  - ip: 127.0.0.1
+    limit: 5
+  - ip: 127.0.0.2
+    limit: 10
