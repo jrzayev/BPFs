@@ -105,19 +105,19 @@ static error_t parse_arg(int key, char* arg, struct argp_state* state) {
       }
       break;
     case ARGP_KEY_ARG:
-  		errno = 0;
-  		if (pos_args == 0) {
-  			env.duration = strtol(arg, NULL, 10);
-  			if (errno) {
-  				fprintf(stderr, "invalid internal\n");
-  				argp_usage(state);
-  			}
-  		} else {
-  			fprintf(stderr, "unrecognized positional argument: %s\n", arg);
-  			argp_usage(state);
-  		}
-  		pos_args++;
-  		break;
+      errno = 0;
+      if (pos_args == 0) {
+        env.duration = strtol(arg, NULL, 10);
+        if (errno) {
+          fprintf(stderr, "invalid internal\n");
+          argp_usage(state);
+        }
+      } else {
+        fprintf(stderr, "unrecognized positional argument: %s\n", arg);
+        argp_usage(state);
+      }
+      pos_args++;
+      break;
     default:
       return ARGP_ERR_UNKNOWN;
   	}
@@ -154,7 +154,7 @@ static int get_summary(struct bpf_map *hists) {
     if (err < 0) {
       fprintf(stderr, "Failed to lookup hists: %d\n", err);
 			return -1;
-		}
+    }
 
     int max = 0;
     for (int i = 0; i < MAX_SLOTS; i++) {

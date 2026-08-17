@@ -1,0 +1,4 @@
+interfaceName: "lo"
+ipv4BlackList:
+  - 127.0.0.1
+ipv6BlackList: []

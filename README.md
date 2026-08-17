@@ -29,7 +29,7 @@ sudo ./tsastat.py
 Compile the BPF source into a package, then run it:
 
 ```bash
-cd openlat
+cd openlat-v1
 ecc openlat.c openlat.h
 sudo ecli run package.json
 ```
