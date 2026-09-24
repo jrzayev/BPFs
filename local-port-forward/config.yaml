@@ -1,0 +1,5 @@
+portMaps:
+  - srcPort: 6000
+    dstPort: 5000
+  - srcPort: 8080
+    dstPort: 8880
