@@ -7,10 +7,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/cilium/ebpf/link"
 	"github.com/cilium/ebpf/rlimit"
@@ -18,7 +18,7 @@ import (
 
 func main() {
 	if err := rlimit.RemoveMemlock(); err != nil {
-		log.Fatal(err)
+		log.Fatal("Removing Memlock: ", err)
 	}
 
 	var objs bpfObjects
@@ -29,34 +29,41 @@ func main() {
 	defer objs.Close()
 	fmt.Println("eBPF objects loaded")
 
-	kp, err := link.Kprobe("__x64_sys_kill", objs.SysKillCount, nil)
-
+	kp, err := link.Kprobe("kernel_clone", objs.TraceKernelClone, nil)
 	if err != nil {
-		log.Fatalf("attach failed: %v", err)
+		log.Fatal("Attach failed: ", err)
 	}
 	defer kp.Close()
+	fmt.Println("Attached to process creation")
 
-	fmt.Println("kprobe attached to kill syscall")
-	fmt.Println("Watching kill() calls. Press Ctrl+C to stop.")
 
 	stopper := make(chan os.Signal, 1)
 	signal.Notify(stopper, os.Interrupt, syscall.SIGTERM)
-	var key uint32 = 0
-	var value uint64 = 0
+	var lostKey uint32 = 0
+	var lostValue uint64 = 0
 
 	for {
 		select {
 		case <-stopper:
 			log.Println("\n")
 			log.Println("Shutting down...")
-			log.Printf("Done. Total kill() calls observed: %d", value)
+			log.Printf("Done. Total lost observed: %d", lostValue)
 			return
 		default:
-			err = objs.KillCount.Lookup(&key, &value)
-			if err == nil {
-				log.Printf("kill() calls since start: %d", value)
+			objs.LostCount.Lookup(&lostKey, &lostValue)
+			iter := objs.ChildCount.Iterate()
+			var key uint32
+			var value uint64
+			for iter.Next(&key, &value) {
+				log.Printf(" PID %d: created %d childrens", key, value)
 			}
+
+			if err := iter.Err(); err != nil {
+				log.Printf("iterator error: %v", err)
+			}
+
 			time.Sleep(1 * time.Second)
 		}
 	}
+	
 }

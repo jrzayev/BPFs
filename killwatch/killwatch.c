@@ -3,10 +3,8 @@
 //
 //go:build ignore
 
-
 #include "../common/vmlinux.h"
 #include "../common/bpf_helpers.h"
-#include "../common/bpf_endian.h"
 
 char _license[] SEC("license") = "Dual MIT/GPL";
 
@@ -31,4 +29,3 @@ int sys_kill_count(struct pt_regs *ctx) {
 
   return 0;
 }
-
