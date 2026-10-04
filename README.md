@@ -42,6 +42,15 @@ make
 sudo ./acceptlat
 ```
 
+### Go/bpf2go tools
+
+```bash
+go mod tidy
+go generate ./...
+GOOS=linux GOARCH=amd64 go build -o ebpf-load-balancer-l4
+sudo ./ebpf-load-balancer-l4
+```
+
 ## Acknowledgements
 
 Special thanks to Brendan Gregg for his work and inspiration in the field of systems performance, and especially in BPF.
