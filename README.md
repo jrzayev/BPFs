@@ -61,3 +61,5 @@ Thanks to the [eunomia-bpf](https://github.com/eunomia-bpf/eunomia-bpf) project 
 
 All code in this repository was written entirely by me for testing and educational purposes.<br>
 But for some tool descriptions, however, were generated with the assistance of AI.
+
+Some of the code in this repository was copied from the [bpf-developer-tutorial](https://github.com/eunomia-bpf/bpf-developer-tutorial) and subsequently modified by me for learning and experimentation. The original code and project are credited above.
